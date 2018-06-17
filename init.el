@@ -35,11 +35,6 @@
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
      ("melpa" . "http://melpa-stable.milkbox.net/packages/")))))
-(when (>= emacs-major-version 24)
-;;  (require 'package)
-  ;;(package-initialize)
-  (add-to-list 'package-archives '("melpa" . "http://melpa-stable.milkbox.net/packages/") t)
-  )
+)
 (package-refresh-contents)
-(package-install 'intero)
 (add-hook 'haskell-mode-hook 'intero-mode)
