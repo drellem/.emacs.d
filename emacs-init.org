@@ -1,0 +1,534 @@
+#+PROPERTY: header-args :tangle yes
+
+* init
+
+** Shell
+
+#+BEGIN_SRC emacs-lisp
+
+  (setq default-directory (expand-file-name "~"))
+
+  (shell)
+
+#+END_SRC
+
+** Custom commands
+
+#+BEGIN_SRC emacs-lisp
+
+    ;;; Key Commands, Start With function definitions
+
+    (defun move-line-up ()
+
+      "Move up the current line."
+
+      (interactive)
+
+      (transpose-lines 1)
+
+      (forward-line -2)
+
+      (indent-according-to-mode))
+
+ 
+
+    (defun move-line-down ()
+
+      "Move down the current line."
+
+      (interactive)
+
+      (forward-line 1)
+
+      (transpose-lines 1)
+
+      (forward-line -1)
+
+      (indent-according-to-mode))
+
+ 
+
+    (defun move-char-left ()
+
+      "Move the current character left"
+
+      (interactive)
+
+      (transpose-chars 1)
+
+      (forward-char -2)
+
+      (indent-according-to-mode))
+
+    
+
+    (defun move-char-right ()
+
+      "Move the current character right"
+
+      (interactive)
+
+      (forward-char 1)
+
+      (transpose-chars 1)
+
+      (forward-char -1)
+
+      (indent-according-to-mode))
+
+ 
+
+    (defun reverse-zap-to-char (character)
+
+       (interactive "c")
+
+       (zap-to-char -1 character))
+
+    ;;; Set key commands
+
+ 
+
+    (global-set-key (kbd "M-c") 'previous-line)
+
+    (global-set-key (kbd "M-t") 'next-line)
+
+    (global-set-key (kbd "M-n") 'forward-char)
+
+    (global-set-key (kbd "M-h") 'backward-char)
+
+    (global-set-key (kbd "M-r") 'forward-word)
+
+    (global-set-key (kbd "M-g") 'backward-word)
+
+    (global-set-key (kbd "C-,") 'backward-kill-word)
+
+    ;; (global-set-key (kbd "C-t") 'kill-line)
+
+    (global-set-key (kbd "M-s") 'isearch-forward)
+
+    (global-set-key (kbd "C-s") 'isearch-backward)
+
+    (global-set-key (kbd "C-c m c") 'mc/edit-lines)
+
+    (global-set-key (kbd "C-M-c")  'move-line-up)
+
+    (global-set-key (kbd "C-M-t") 'move-line-down)
+
+    (global-set-key (kbd "C-M-h") 'move-char-left)
+
+    (global-set-key (kbd "C-M-n") 'move-char-right)
+
+ 
+
+    (global-set-key (kbd "C-z") 'reverse-zap-to-char)
+
+#+END_SRC
+
+** GUI
+
+#+BEGIN_SRC emacs-lisp
+
+  (ido-mode t)
+
+ 
+
+  (package-initialize)
+
+ 
+
+  (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+
+  (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+
+  (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+
+  (add-to-list 'load-path "~/.emacs.d/site-lisp/groovy-emacs-modes-master")
+
+  (add-to-list 'load-path "~/.emacs.d/site-lisp/s.el-master")
+
+  (add-to-list 'load-path "~/.emacs.d/all-the-icons")
+
+  (add-to-list 'load-path "~/.emacs.d/doom-themes")
+
+  (let ((default-directory  "~/.emacs.d/site-lisp/"))
+
+    (normal-top-level-add-subdirs-to-load-path))
+
+#+END_SRC
+
+** Proxy
+
+#+BEGIN_SRC emacs-lisp
+
+;  (load "groovy-mode")
+
+  (load "s")
+
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
+;  (require 'groovy-mode)
+
+  (require 's)
+
+  (require 'package)
+
+  (require 'sql)
+
+  (require 'all-the-icons)
+
+  (require 'doom-themes)
+
+#+END_SRC
+
+** Databases
+
+#+BEGIN_SRC emacs-lisp
+
+;  (setq sql-mysql-program "C:/Program Files (x86)/MySQL/MySQL Server 5.5/bin/mysql.exe")
+
+;  (setq sql-db2-program "C:/Program Files (x86)/EIT/SQLLIB/BIN/db2.exe")
+
+;
+
+ 
+
+ 
+
+ 
+
+;  (setq sql-mysql-options '("-C" "-f" "-t" "-n"))
+
+ 
+
+  ;;; Change the path to db2cmd to reflect the correct
+
+  ;;; location for your machine.
+
+;  (setq sql-db2-program "c:/program files (x86)/eit/sqllib/bin/db2cmd.exe")
+
+  ;;; The interesting options here is the "-t" option
+
+  ;;; passed to "db2". This is extremely handy - it
+
+  ;;; means that ';' (semicolon) ; is treated as the command
+
+  ;;; line terminator. The default is to treat the end-of-line
+
+  ;;; as a SQL statement terminator.
+
+  ;;; You may look up the command reference online for an
+
+  ;;; explanation of the rest.
+
+; (setq sql-db2-options '("-c" "-i" "-w" "db2" "-tv"))
+
+ 
+
+  ;(add-hook 'sql-mode-hook 'font-lock-mode)
+
+#+END_SRC
+
+** Org Mode
+
+#+BEGIN_SRC emacs-lisp
+
+    (setq org-src-fontify-natively t)
+
+    (setq org-src-tab-acts-natively t)
+
+    ;; org mode config
+
+    (add-hook 'org-mode-hook (lambda ()
+
+                               (local-set-key (kbd "C-M-t") 'org-metadown)
+
+                               (local-set-key (kbd "C-M-c") 'org-metaup)
+
+                               (local-set-key (kbd "C-M-h") 'org-metaleft)
+
+                               (local-set-key (kbd "C-M-n") 'org-metaright)
+
+                               (local-set-key (kbd "C-c a") 'org-agenda)
+
+                               (local-set-key (kbd "M-h") 'backward-char)
+
+                               (local-set-key (kbd "C-,") 'backward-kill-word)
+
+                               (local-set-key (kbd "C-c j") 'org-insert-jira-link)
+
+                               (local-unset-key (kbd "C-M-g"))
+
+                               (setq org-agenda-files (list "~/org/todo.org"
+
+                                                            "~/org/tickler.org"
+
+                                                            "~/org/calendar.org"))
+
+;                                     (flyspell-mode)
+))
+
+ 
+
+              (global-set-key (kbd "C-c C-l") 'org-insert-link-global)
+
+              (global-set-key (kbd "C-c C-o") 'org-open-at-point-global)
+
+#+END_SRC
+
+** Flyspell
+
+#+BEGIN_SRC emacs-lisp  
+
+  ;; flyspell config
+
+;  (add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin")
+
+;  (setq ispell-program-name "aspell")
+
+;  (require 'ispell)
+
+;  (put 'upcase-region 'disabled nil)
+
+ 
+
+;  (add-hook 'flyspell-mode-hook (lambda ()
+
+;                                  (define-key flyspell-mode-map (kbd "C-,") nil)
+
+;                                  (local-set-key (kbd "C-c e") 'flyspell-goto-next-error)))
+
+#+END_SRC
+
+** Java
+
+#+BEGIN_SRC emacs-lisp  
+
+  ;; Java config
+
+  (add-hook 'java-mode-hook
+
+            (lambda ()
+
+;              (meghanada-mode t)
+
+              (flycheck-mode +1)
+
+              (setq c-basic-offset 2)
+
+              (rainbow-delimiters-mode t)
+
+              (rainbow-identifiers-mode t)
+
+;              (local-set-key (kbd "C-M-h") 'meghanada-reference)
+
+ ;             (local-set-key (kbd "C-t") 'meghanada-typeinfo)
+
+  ;            (local-set-key (kbd "C-S-f") 'meghanada-code-beautify)
+
+              (local-set-key (kbd "C-c e") 'flycheck-next-error)))
+
+ 
+
+;  (require 'meghanada)
+
+  (cond
+
+   ((eq system-type 'windows-nt)
+
+    (setq meghanada-java-path (expand-file-name "bin/java.exe" (getenv "JAVA_HOME")))
+
+    (setq meghanada-maven-path (expand-file-name "mvn.cmd" (getenv "MAVEN_HOME"))))
+
+   (t
+
+    (setq meghanada-java-path "java")
+
+    (setq meghanada-maven-path "mvn")))
+
+  (setq meghanada-server-remote-debug t)
+
+#+END_SRC
+
+** Ruby
+
+#+BEGIN_SRC emacs-lisp  
+
+(add-hook 'ruby-mode-hook 'robe-mode)
+
+(eval-after-load 'company '(push 'company-robe company-backends))
+
+#+END_SRC
+
+** Comint, Lisp, Random 
+
+#+BEGIN_SRC emacs-lisp  
+
+    (add-hook 'comint-mode-hook
+
+              (lambda ()
+
+                (local-unset-key (kbd "M-n"))))
+
+    (add-hook 'lisp-mode-hook
+
+              (lambda ()
+
+                (rainbow-delimiters-mode t)
+
+                (rainbow-identifiers-mode t)))
+
+    (add-hook 'dired-mode-hook
+
+              (lambda ()
+
+                (local-unset-key (kbd "M-s"))))
+
+ 
+
+    (smartparens-global-mode 1)
+
+  (add-hook 'info-mode-hook
+
+            (lambda ()
+
+               (local-unset-key (kbd "M-n"))))
+
+ 
+
+    ;;; backup/autosave
+
+    (defvar backup-dir (expand-file-name "~/.emacs.d/backup/"))
+
+    (defvar autosave-dir (expand-file-name "~/.emacs.d/autosave/"))
+
+    (setq backup-directory-alist (list (cons ".*" backup-dir)))
+
+    (setq auto-save-list-file-prefix autosave-dir)
+
+    (setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
+
+#+END_SRC
+
+** Git
+
+#+BEGIN_SRC emacs-lisp  
+
+;  (setq magit-git-executable "C:/Program Files (x86)/DST/SCM/Git/bin/git.exe")
+
+  (require 'magit)
+
+  (define-derived-mode magit-staging-mode magit-status-mode "Magit staging"
+
+    "Mode for showing staged and unstaged changes."
+
+    :group 'magit-status)
+
+  (defun magit-staging-refresh-buffer ()
+
+    (magit-insert-section (status)
+
+      (magit-insert-untracked-files)
+
+      (magit-insert-unstaged-changes)
+
+      (magit-insert-staged-changes)))
+
+  (defun magit-staging ()
+
+    (interactive)
+
+    (magit-mode-setup #'magit-staging-mode))
+
+  (global-set-key (kbd "C-M-g") 'magit-staging)
+
+  (setq magit-commit-show-diff nil
+
+      magit-revert-buffers 1)
+
+ 
+
+#+END_SRC
+
+** Startup 
+
+#+BEGIN_SRC emacs-lisp  
+
+  ;;; Startup files
+
+  (load-theme 'doom-one)
+
+ 
+
+  (find-file "~/.emacs.d/emacs-init.org")
+
+ 
+
+  (find-file "~/org/todo.org")
+
+  (projectile-mode)
+
+  (flyspell-mode)
+
+  (delete-other-windows)
+
+ 
+
+  (defun sort-lines-nocase ()
+
+    (interactive)
+
+    (let ((sort-fold-case t))
+
+      (call-interactively 'sort-lines)))
+
+ 
+
+  ;; Prismo
+
+  (defun expand-str ()
+
+    "Expands a templated String, useful in Java"
+
+    (interactive)
+
+    (save-excursion
+
+      (progn
+
+        (search-backward "\"")
+
+        (let ((first-marker (point-marker))
+
+              (second-marker (progn
+
+                               (forward-char)
+
+                               (search-forward "\"")
+
+                               (point-marker))))
+
+          (goto-char first-marker)
+
+          (while (re-search-forward "#{\\(.*?\\)}" second-marker t)
+
+            (replace-match "\" + \\1 + \"" nil nil))))))
+
+ 
+
+  (global-set-key (kbd "C-c x") 'expand-str)
+
+ 
+
+  (add-hook 'emacs-lisp-mode-hook (lambda ()
+
+                               (rainbow-delimiters-mode t)
+
+                               (rainbow-identifiers-mode t)))
+
+#+END_SRC
+
+ 
+
+* [[~/org/todo.org][Todo]]
